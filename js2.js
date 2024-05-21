@@ -8,12 +8,53 @@ const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
 //let map, mapEvent;
+class Workout {
+  date = new Date(); //as a field
+  //În Interiorul Clasei: Declarația date = new Date(); în interiorul clasei asigură că fiecare instanță a clasei Workout primește o valoare unică pentru data curentă în momentul în care este creată. Aceasta înseamnă că fiecare antrenament (Workout) are propria sa dată specifică.
+  //În Exteriorul Clasei: Dacă date ar fi fost definit în afara clasei, toate instanțele clasei Workout ar împărți aceeași valoare pentru date, ceea ce nu ar fi corect în contextul în care fiecare antrenament are loc la momente diferite.
+  id = (Date.now() + "").slice(-10); //ant object should have some kinda identifier, so later we can then later identify it using the ID //as a field
+  //Date.now() - its giving me the current time stamp of right now
+  constructor(coords, distance, duration) {
+    this.coords = coords; //[lat,lng]
+    this.distance = distance; //in km
+    this.duration = duration; //in min
+  }
+}
+//we are gonna create the child classes of the workout
+class Running extends Workout {
+  constructor(coords, distance, duration, cadence) {
+    //should take the same data as the parent class plus the additional properties that we want to se on a running object
+    super(coords, distance, duration); //By calling the super() method in the constructor method, we call the parent's constructor method and gets access to the parent's properties and methods:
+    this.cadence = cadence; //its the unique property that running is having
+    this.calcPace(); //we call it in the constructor
+  }
+  calcPace() {
+    //min/km
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+class Cycling extends Workout {
+  constructor(coords, distance, duration, elevationGain) {
+    super(coords, distance, duration);
+    this.elevationGain = elevationGain;
+    this.calcSpeed();
+  }
+  calcSpeed() {
+    //km/h
+    this.speed = this.distance / (this.duration / 60);
+    return this.speed;
+  }
+}
+//const run1 = new Running([39, -12], 5.2, 24, 178);
+//const cycling1 = new Cycling([39, -12], 27, 95, 578);
+//console.log(run1, cycling1);
+//APPLICATION ARCHITECTURE
 class App {
   #map; //both of them will become private instance properties
   #mapEvent;
   constructor() {
     this._getPosition(); //i called the function // will get executed immediately as the script loads, because is in global scope
-
     form.addEventListener("submit", this._newWorkout.bind(this)); //this._newWorkout-is an event handler function;so its a function that its gonna pe called by addEventListener
     // this._newWorkout is gonna point to form and no longer to the App object
     //we fix that by using bind
@@ -108,3 +149,6 @@ class App {
   }
 }
 const app = new App(); //we made an instance
+//The line const app = new App(); is necessary because it creates an instance of the App class and initializes the application. In object-oriented programming, classes serve as blueprints for creating objects. When you define a class, you're essentially defining a new type of object with its own properties and methods.
+//However, simply defining a class doesn't automatically create an object. You need to explicitly create an instance of the class using the new keyword followed by the class name and parentheses (). This instantiation process calls the class constructor, which typically initializes the object's properties and sets up any necessary functionality.
+//In this case, const app = new App(); creates an instance of the App class and assigns it to the variable app. This instance represents the running application and allows you to interact with its methods and properties. Without this line, the App class would be defined but not actually used, so the application wouldn't be initialized or executed.
