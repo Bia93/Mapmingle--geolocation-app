@@ -49,7 +49,7 @@ if (navigator.geolocation) {
 //how to display a map using a third party library called LEAFLET
 //any variable that is global in any script will be available to all the other scripts
 form.addEventListener("submit", function (e) {
-  e.preventDefault();
+  e.preventDefault(); //În JavaScript, metoda preventDefault este utilizată pentru a preveni comportamentul implicit al unui eveniment. Comportamentul implicit este acțiunea pe care browser-ul ar efectua-o în mod normal atunci când se produce un anumit eveniment. Utilizarea preventDefault permite dezvoltatorilor să suprascrie acest comportament standard și să definească propriul comportament personalizat.
   //Clear input fields
   inputDistance.value =
     inputDuration.value =
