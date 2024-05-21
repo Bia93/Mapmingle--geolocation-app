@@ -5,7 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="shortcut icon" type="image/png" href="/icon.png" />
-
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      defer
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap"
       rel="stylesheet"
@@ -13,7 +24,7 @@
 
     <link rel="stylesheet" href="style.css" />
 
-    <script defer src="script.js"></script>
+    <script defer src="js2.js"></script>
     <title>Mapmingle</title>
   </head>
   <body>
@@ -23,7 +34,7 @@
       <ul class="workouts">
         <form class="form hidden">
           <div class="form__row">
-            <label class="form__label">Type</label>
+            <label class="form__label">Activity</label>
             <select class="form__input form__input--type">
               <option value="running">Running</option>
               <option value="cycling">Cycling</option>
