@@ -2,7 +2,7 @@
 //for a better structure we use classes
 const form = document.querySelector(".form");
 const containerWorkouts = document.querySelector(".workouts");
-const inputType = document.querySelector(".form__input--distance");
+const inputType = document.querySelector(".form__input--type");
 const inputDistance = document.querySelector(".form__input--distance");
 const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
@@ -53,6 +53,7 @@ class Cycling extends Workout {
 class App {
   #map; //both of them will become private instance properties
   #mapEvent;
+  #workouts = [];
   constructor() {
     this._getPosition(); //i called the function // will get executed immediately as the script loads, because is in global scope
     form.addEventListener("submit", this._newWorkout.bind(this)); //this._newWorkout-is an event handler function;so its a function that its gonna pe called by addEventListener
@@ -123,16 +124,49 @@ class App {
   }
   _newWorkout(e) {
     e.preventDefault();
-    //console.log(this);
-    //Clear input fields
-    inputDistance.value =
-      inputDuration.value =
-      inputCadence.value =
-      inputElevation.value =
-        ""; //pt a sterge valorile in tabel in momentul in care dam enter pe tabel
-    //Display marker
-    //console.log(this.#mapEvent);
+    //Get data from form
+    const type = inputType.value; //they always come as strings, let s convert them to a number
+    const distance = Number(inputDistance.value);
+    const duration = Number(inputDuration.value);
     const { lat, lng } = this.#mapEvent.latlng; //destructuring
+    let workout;
+    //If activity running, create running object
+    if (type === "running") {
+      const cadence = Number(inputCadence.value);
+      //Check if data is valid
+      //In JavaScript, a finite number is a numeric value that is not NaN (Not a Number), Infinity, or -Infinity. Essentially, it's any real number that is neither infinite nor NaN.
+      //if the distance is not a number(we use Number.isFinite),then we want to return it
+      if (
+        !Number.isFinite(distance) ||
+        distance < 0 ||
+        !Number.isFinite(duration) ||
+        duration < 0 ||
+        !Number.isFinite(cadence) ||
+        cadence < 0
+      )
+        return alert("Only positive numbers!");
+      workout = new Running([lat, lng], distance, duration, cadence);
+    }
+    //If activity cycling, create cycling object
+    if (type === "cycling") {
+      const elevation = Number(inputElevation.value);
+      //Check if data is valid
+      if (
+        !Number.isFinite(distance) ||
+        distance < 0 ||
+        !Number.isFinite(duration) ||
+        duration < 0 ||
+        !Number.isFinite(elevation)
+      )
+        return alert("Only positive numbers");
+      workout = new Cycling([lat, lng], distance, duration, elevation);
+    }
+
+    //If activity cycling, create cycling object
+
+    //Add the new object to the workout array
+    this.#workouts.push(workout);
+    //Render workout on the map as marker
     L.marker([lat, lng]) //we add this for blue marker-luam de la mapEvent datele(cand dam console.log(mapEvent)-o sa ne apara obiect si deacolo luam datele)
       .addTo(this.#map)
       .bindPopup(
@@ -146,6 +180,16 @@ class App {
       )
       .setPopupContent("Workout")
       .openPopup();
+    //Render workout on the list
+
+    // Hide form + Clear input fields
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        ""; //pt a sterge valorile in tabel in momentul in care dam enter pe tabel
+
+    //console.log(this.#mapEvent);
   }
 }
 const app = new App(); //we made an instance
