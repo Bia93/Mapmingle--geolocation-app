@@ -86,7 +86,11 @@ class App {
   #mapEvent;
   #workouts = [];
   constructor() {
+    //Get user's position
     this._getPosition(); //i called the function // will get executed immediately as the script loads, because is in global scope
+    //Get data from local storage
+    this._getLocalStorage();
+    //Attach event handlers
     form.addEventListener("submit", this._newWorkout.bind(this)); //this._newWorkout-is an event handler function;so its a function that its gonna pe called by addEventListener
     // this._newWorkout is gonna point to form and no longer to the App object
     //we fix that by using bind
@@ -150,6 +154,14 @@ class App {
     console.log(this);
     this.#map.on("click", this._showForm.bind(this));
     //in caz ca nu e clar, voi merge la 238 la johnatan, udemy, minutul 20:00
+    this.#workouts.forEach((work) => {
+      //#workouts is in array if you look in the code; so we loop throw array
+      //we want to do something for each of the workouts, so we loop over the array,but we dont want to create a new array//
+      //so we use forEach(), we gonna call each of the work
+      //we need show also the render message on the map
+      this._renderWorkMarker(work);
+      //are leagtura cu incarcarea paginii de aia am pus in load map si nu in _getlocalstorage
+    });
   }
   _showForm(mapE) {
     this.#mapEvent = mapE;
@@ -223,7 +235,8 @@ class App {
     this._renderWorkout(workout); //we are calling the method
     // Hide form + Clear input fields
     this._hideForm();
-
+    //Set local storage to all workouts
+    this._setLocalStorage();
     //console.log(this.#mapEvent);
   }
   _renderWorkMarker(workout) {
@@ -317,7 +330,45 @@ class App {
     //we are doing what is down, to increase the number of clicks
     //we take the object that we already have, the workout and using that public interface
     //using the public interface
-    workout.click();
+    //workout.click();
+  }
+  _setLocalStorage() {
+    localStorage.setItem("workouts", JSON.stringify(this.#workouts));
+    //localStorage is a very simple API AND its usually used for small amounts of data
+    //that is because local storage is blocking
+    //JSON.stringify- to convert  every object in JS to a string
+  }
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem("workouts"));
+    console.log(data);
+    //when is nothing in local storage the data will be undeifined
+    if (!data) return;
+    //the method_getLocalStorage() is gonna be executed in the very beginning.
+    //And so at that point, the workouts array is gonna be empty. But if we already
+    //have some data in the local storage then, we will simply set the workouts
+    //array to the data that we had before
+    this.#workouts = data;
+    //we will take all the workouts and render them on the list
+    // !!! when we convert from object to string and viceversa we lost the PROTOTYPE CHAIN. so the new
+    // object that we recover from the local storage are now just regulat objects( it has to do with the
+    //clicks we made that our workout move on the pace) .They are no longer objects that we created by running
+    //or by the cycling class. so they will be not able to inherit any of there methods
+    //we have to restore the objects
+    //we are gonna disable the functionality of counting the clicks
+    this.#workouts.forEach((work) => {
+      this._renderWorkout(work);
+      //#workouts is in array if you look in the code; so we loop throw array
+      //we want to do something for each of the workouts, so we loop over the array,but we dont want to create a new array//
+      //so we use forEach(), we gonna call each of the work
+      //we need show also the render message on the map
+    });
+  }
+  reset() {
+    //remove the workouts item from local storage
+    localStorage.removeItem("workouts");
+    //and now we can then reload the page programmatically and then the application will look completely empty
+    location.reload();
+    //location-is a big object that contains a lot of methods and properties in the browser
   }
 }
 const app = new App(); //we made an instance
